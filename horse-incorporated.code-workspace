@@ -1,0 +1,126 @@
+{
+  "settings": {
+    "dev.containers.optimisticallyLaunchDocker": false,
+    "python.terminal.activateEnvironment": true,
+    "editor.showUnused": true,
+    "explorer.excludeGitIgnore": false,
+    "files.exclude": {
+      "LICENSE": true,
+      // ".devcontainer": true,
+      ".eslintrc.json": true,
+      ".gitignore": true,
+      "eslint.config.js": true,
+      "package.json": true,
+      "prompty.json": true,
+      "requirements.txt": true,
+      "tsconfig.json": true,
+      ".obsidian": true,
+      "docs/assets": true
+    },
+    "promptyLanguageServer.trace.server": "verbose",
+    "prompty.modelConfigurations": [
+
+      {
+        "name": "default",
+        "type": "serverless",
+        "endpoint": "https://models.inference.ai.azure.com",
+        "model": "gpt-4o",
+      },
+      {
+        "name": "gpt-4o-mini",
+        "type": "openai",
+        "api_key": "${env:OPENAI_API_KEY}",
+      },
+    ]
+  },
+	"folders": [
+    {
+      "name": "actions",
+      "path": "../actions"
+    },
+    {
+      "name": "api",
+      "path": "../api"
+    },
+    {
+      "name": "bus",
+      "path": "../bus"
+    },
+    {
+      "name": "coder",
+      "path": "../coder"
+    },
+    {
+      "name": "components",
+      "path": "../components"
+    },
+    {
+      "name": "db",
+      "path": "../db"
+    },
+    {
+      "name": "diagrammer",
+      "path": "../diagrammer"
+    },
+    {
+      "name": "docs",
+      "path": "../docs"
+    },
+    {
+      "name": "filesearcher",
+      "path": "../filesearcher"
+    },
+    {
+      "name": "flows",
+      "path": "../flows"
+    },
+    {
+      "name": "mcp",
+      "path": "../mcp"
+    },
+    {
+      "name": "morpher",
+      "path": "../morpher"
+    },
+    {
+      "name": "plugins",
+      "path": "../plugins"
+    },
+    {
+      "name": "prompts",
+      "path": "../prompts"
+    },
+    {
+      "name": "repl",
+      "path": "../repl"
+    },
+    {
+      "name": "tagger",
+      "path": "../tagger"
+    },
+    {
+      "name": "telemetry",
+      "path": "../telemetry"
+    },
+    {
+      "name": "templates",
+      "path": "../templates"
+    },
+    {
+      "name": "websearcher",
+      "path": "../websearcher"
+    },
+    {
+      "name": "whisper",
+      "path": "../whisper"
+    },
+    {
+      "name": "whiteboard",
+      "path": "../whiteboard"
+    },
+    {
+      "name": "workspace",
+      "path": "."
+    }
+  ]
+}
