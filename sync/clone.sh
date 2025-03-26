@@ -2,7 +2,7 @@
 
 # @todo fix the script to do this directory switching better
 # Start in directory: ./workspace/
-cd ../..
+cd ..
 
 # Fetch all repository names for HorseIncorporated from GitHub
 REPOS=$(curl -s https://api.github.com/orgs/HorseIncorporated/repos | jq -r '.[].name')
