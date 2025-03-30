@@ -20,25 +20,68 @@ jobs:
             sudo apt-get update && sudo apt-get install -y gh
           fi
 
-      # Example step: write private key from a secret into a file
-      # (Adjust to suit your actual approach.)
+      # Create private key file from your GitHub secret
       - name: Prepare private key
         run: |
           echo "${{ secrets.MY_APP_PRIVATE_KEY }}" > app_private_key.pem
 
+      # Write the entire applogin.sh script, then chmod +x
+      - name: Write applogin.sh
+        run: |
+          cat <<'EOF' > applogin.sh
+          #!/usr/bin/env bash
+          set -o pipefail
+
+          client_id=$1 # Client ID as first argument
+          pem=$( cat $2 ) # file path of the private key as second argument
+
+          now=$(date +%s)
+          iat=$((${now} - 60))    # Issued 60 seconds in the past
+          exp=$((${now} + 600))   # Expires 10 minutes in the future
+
+          b64enc() { openssl base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n'; }
+
+          header_json='{
+              "typ":"JWT",
+              "alg":"RS256"
+          }'
+          # Header encode
+          header=$( echo -n "${header_json}" | b64enc )
+
+          payload_json="{
+              \"iat\":${iat},
+              \"exp\":${exp},
+              \"iss\":\"${client_id}\"
+          }"
+          # Payload encode
+          payload=$( echo -n "${payload_json}" | b64enc )
+
+          # Signature
+          header_payload="${header}"."${payload}"
+          signature=$(
+              openssl dgst -sha256 -sign <(echo -n "${pem}") \
+              <(echo -n "${header_payload}") | b64enc
+          )
+
+          # Create JWT
+          JWT="${header_payload}"."${signature}"
+          printf '%s\n' "JWT: $JWT"
+          EOF
+
+          chmod +x applogin.sh
+
+      # Use the script to generate a JWT and store it in step outputs
       - name: get jwt
         id: get_jwt
         run: |
-          chmod +x ./applogin.sh
-          # Provide your App ID and the path to the private key file
           token_output=$(./applogin.sh "${{ secrets.MY_APP_ID }}" app_private_key.pem)
-
-          # Extract just the JWT substring from the script’s "JWT: ..." line
+          # Extract the line that begins with "JWT: "
           jwt_value=$(echo "$token_output" | grep '^JWT:' | sed 's/JWT: //')
           echo "jwt=$jwt_value" >> "$GITHUB_OUTPUT"
 
-      # Typically you must exchange the JWT for an installation token before 'gh auth login'
-      # For demonstration, we just show how you'd pass the JWT if it were a valid token
+      # Example of how you might authenticate GH CLI with the JWT
+      # (You probably need to exchange the JWT for an installation token,
+      #  but we'll leave it as-is for demonstration.)
       - name: Authenticate GitHub CLI
         run: |
           echo "${{ steps.get_jwt.outputs.jwt }}" | gh auth login --with-token > /dev/null
@@ -54,6 +97,3 @@ jobs:
 
       - name: Execute Terminal Command
         run: gh codespace ssh -c "${{ github.event.inputs.codespace }}" -- ${{ github.event.inputs.command }} > /dev/null
-
-      - name: Pause Codespace
-        run: gh codespace stop "${{ github.event.inputs.codespace }}" > /dev/null(
