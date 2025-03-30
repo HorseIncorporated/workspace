@@ -67,5 +67,5 @@
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "workspaceFolder": "/workspace",
-  "postCreateCommand": "bash -c 'echo $GH_PAT | gh auth login --with-token --hostname github.com && gh auth setup-git' && sudo /usr/local/bin/init-firewall.sh"
+  "postCreateCommand": "bash -c './setup.sh'"
 }
