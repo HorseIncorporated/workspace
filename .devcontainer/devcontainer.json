@@ -67,5 +67,5 @@
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "workspaceFolder": "/workspace",
-  "postCreateCommand": "bash -c './setup.sh'"
+  // "postCreateCommand": "bash -c './setup.sh'"
 }
