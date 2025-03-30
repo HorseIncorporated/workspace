@@ -49,7 +49,7 @@ export CODESPACE_ID=<your-codespace-id-here>
 # and is able to serve responses even with
 # the --dangerously-skip-permissions flag enabled
 gh workflow run "Run Command in Codespace" \
-  --repo YourUsername/HorseInc \
+  --repo HorseIncorporated/workspace \
   --field codespace=$CODESPACE_ID \
   --field command="claude -p \"why is the sky blue?\" --dangerously-skip-permissions"
 ```

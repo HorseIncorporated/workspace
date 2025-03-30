@@ -10,6 +10,11 @@
     "--cap-add=NET_ADMIN",
     "--cap-add=NET_RAW"
   ],
+  "features": {
+    "ghcr.io/devcontainers/features/sshd:1": {
+        "version": "latest"
+    }
+  },
   "customizations": {
     "vscode": {
       "extensions": [
