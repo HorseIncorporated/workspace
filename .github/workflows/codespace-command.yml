@@ -1,0 +1,29 @@
+name: Run Command in Codespace
+
+on:
+  workflow_dispatch:
+    inputs:
+      codespace:
+        description: "The Codespace name or ID to operate on."
+        required: true
+      command:
+        description: "The terminal command to execute inside the Codespace."
+        required: true
+
+jobs:
+  run-command:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install GitHub CLI if needed
+        run: |
+          if ! command -v gh >/dev/null; then
+            sudo apt-get update && sudo apt-get install -y gh
+          fi
+      - name: Authenticate GitHub CLI
+        run: echo "${{ secrets.CLAUDE_CODE_GH }}" | gh auth login --with-token > /dev/null
+      - name: Unpause Codespace
+        run: gh codespace resume "${{ github.event.inputs.codespace }}" > /dev/null
+      - name: Execute Terminal Command
+        run: gh codespace exec "${{ github.event.inputs.codespace }}" -- ${{ github.event.inputs.command }} > /dev/null
+      - name: Pause Codespace
+        run: gh codespace stop "${{ github.event.inputs.codespace }}" > /dev/null
