@@ -17,5 +17,9 @@ for repo in "$REPOS_DIR"/*; do
     fi
     echo "Copying .devcontainer from config directory to $repo..."
     cp -r "$(dirname "$0")/config/.devcontainer" "$repo/"
+
+    # git pull because lol
+    git pull origin
+
   fi
 done
