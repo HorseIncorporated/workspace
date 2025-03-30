@@ -23,6 +23,8 @@ jobs:
         run: echo "${{ secrets.CLAUDE_CODE_GH }}" | gh auth login --with-token > /dev/null
       # - name: Unpause Codespace
       #   run: gh codespace rebuild "${{ github.event.inputs.codespace }}" > /dev/null
+      - name: Run repo setup
+        run: ./setup.sh
       - name: Execute Terminal Command
         run: gh codespace ssh -c "${{ github.event.inputs.codespace }}" -- ${{ github.event.inputs.command }} > /dev/null
       - name: Pause Codespace
