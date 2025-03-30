@@ -30,30 +30,26 @@
 
 ## on startup of codespace
 
-### run setup to clone all repositories that belong to the organization
+### clone all repos
 
 ```shell
 ./setup.sh
 ```
 
-### Automate CI and infra workflows
-
-github.event.inputs.codespace
-github.event.inputs.command
-
-```yml
-gh codespace exec "${{ github.event.inputs.codespace }}" -- ${{ github.event.inputs.command }}
-```
-
-## claude code
-
-from claude code docs:
-
-> Use --print (-p) to run Claude in non-interactive mode. In this mode, you can set the ANTHROPIC_API_KEY environment variable to provide a custom API key.
+###
 
 ```shell
-export ANTHROPIC_API_KEY=sk_...
-claude -p "update the README with the latest changes" --allowedTools "Bash(git diff:*)" "Bash(git log:*)" Edit
-```
+# to find your github codespace id
+gh codespace list
 
-In our case, we're using config/.devcontainer/devcontainer.env for this purpose. For now, this is how we'll push config vars to each repositories' coding agent in CI.
+# set it locally so you can reuse the same devcontainer in perpituity
+export CODESPACE_ID=<your-codespace-id-here>
+
+# run a command on the codespace that verifies that claude runs properly
+# and is able to serve responses even with
+# the --dangerously-skip-permissions flag enabled
+gh workflow run "Run Command in Codespace" \
+  --repo YourUsername/HorseInc \
+  --field codespace=$CODESPACE_ID \
+  --field command="claude -p \"why is the sky blue?\" --dangerously-skip-permissions"
+```
