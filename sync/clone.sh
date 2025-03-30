@@ -19,16 +19,14 @@ if ! command -v jq &> /dev/null; then
 fi
 
 # Set the GitHub token if available from environment
-GITHUB_TOKEN=${GITHUB_TOKEN:-}
+GITHUB_PAT =${GITHUB_PAT:-}
 AUTH_HEADER=""
-if [ -n "$GITHUB_TOKEN" ]; then
-    AUTH_HEADER="-H 'Authorization: token $GITHUB_TOKEN'"
+if [ -n "$GITHUB_PAT" ]; then
+    AUTH_HEADER="-H 'Authorization: token $'"
 fi
 
-# Fetch all repository names for HorseIncorporated from GitHub
 REPOS=$(curl -s $AUTH_HEADER https://api.github.com/orgs/HorseIncorporated/repos | jq -r '.[].name')
 
-# Clone each repo, except for "workspace"
 for REPO in $REPOS
 do
   if [ "$REPO" != "workspace" ]
@@ -39,5 +37,4 @@ do
   fi
 done
 
-# Return to the workspace directory
 cd ..
