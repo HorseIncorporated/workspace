@@ -84,7 +84,7 @@ jobs:
       #  but we'll leave it as-is for demonstration.)
       - name: Authenticate GitHub CLI
         run: |
-          echo "${{ steps.get_jwt.outputs.jwt }}" | gh auth login --with-token > /dev/null
+          echo "${{ steps.get_jwt.outputs.jwt }}" | gh auth login -p https --with-token > /dev/null
 
       - name: echo Codespace details
         run: gh codespace list
