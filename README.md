@@ -1,18 +1,44 @@
 # workspace
 
+## helpful links
+
 [View Documentation](https://publish.obsidian.md/horseincorporated/workspace)
 
-## run workspace
+## installation
+
+### CLAUDE_CODE_GH org secret
+
+create and set your CLAUDE_CODE_GH fine-grained access token manually
+
+create a fine-grained access token in github
+
+### ANTHROPIC_API_KEY org secret
+
+create a new personal api token with claude
+
+### Setup your Codespace
+
+1. navigate to the [HorseIncorporated/workspace](https://github.com/HorseIncorporated/workspace) repository.
+2.
+
+## on startup of codespace
+
+### run setup to clone all repositories that belong to the organization
 
 ```shell
 ./setup.sh
 ```
 
-## claude code
-
-
-
 ### Automate CI and infra workflows
+
+github.event.inputs.codespace
+github.event.inputs.command
+
+```yml
+gh codespace exec "${{ github.event.inputs.codespace }}" -- ${{ github.event.inputs.command }}
+```
+
+## claude code
 
 from claude code docs:
 
@@ -24,40 +50,3 @@ claude -p "update the README with the latest changes" --allowedTools "Bash(git d
 ```
 
 In our case, we're using config/.devcontainer/devcontainer.env for this purpose. For now, this is how we'll push config vars to each repositories' coding agent in CI.
-
-###
-
-```yml
-name: Run Command in Codespace
-
-on:
-  workflow_dispatch:
-    inputs:
-      codespace:
-        description: "The Codespace name or ID to operate on."
-        required: true
-      command:
-        description: "The terminal command to execute inside the Codespace."
-        required: true
-
-jobs:
-  run-command:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install GitHub CLI if needed
-        run: |
-          if ! command -v gh >/dev/null; then
-            sudo apt-get update && sudo apt-get install -y gh
-          fi
-      - name: Authenticate GitHub CLI
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token > /dev/null
-      - name: Unpause Codespace
-        run: gh codespace resume "${{ github.event.inputs.codespace }}" > /dev/null
-      - name: Execute Terminal Command
-        run: gh codespace exec "${{ github.event.inputs.codespace }}" -- ${{ github.event.inputs.command }} > /dev/null
-      - name: Pause Codespace
-        run: gh codespace stop "${{ github.event.inputs.codespace }}" > /dev/null
-```
-
-
-gh codespace exec "${{ github.event.inputs.codespace }}" -- ${{ github.event.inputs.command }}
