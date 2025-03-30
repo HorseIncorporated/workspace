@@ -19,15 +19,41 @@ jobs:
           if ! command -v gh >/dev/null; then
             sudo apt-get update && sudo apt-get install -y gh
           fi
+
+      # Example step: write private key from a secret into a file
+      # (Adjust to suit your actual approach.)
+      - name: Prepare private key
+        run: |
+          echo "${{ secrets.MY_APP_PRIVATE_KEY }}" > app_private_key.pem
+
+      - name: get jwt
+        id: get_jwt
+        run: |
+          chmod +x ./applogin.sh
+          # Provide your App ID and the path to the private key file
+          token_output=$(./applogin.sh "${{ secrets.MY_APP_ID }}" app_private_key.pem)
+
+          # Extract just the JWT substring from the script’s "JWT: ..." line
+          jwt_value=$(echo "$token_output" | grep '^JWT:' | sed 's/JWT: //')
+          echo "jwt=$jwt_value" >> "$GITHUB_OUTPUT"
+
+      # Typically you must exchange the JWT for an installation token before 'gh auth login'
+      # For demonstration, we just show how you'd pass the JWT if it were a valid token
       - name: Authenticate GitHub CLI
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token > /dev/null
+        run: |
+          echo "${{ steps.get_jwt.outputs.jwt }}" | gh auth login --with-token > /dev/null
+
       - name: echo Codespace details
         run: gh codespace list
+
       - name: Unpause Codespace
         run: gh codespace rebuild -c "${{ github.event.inputs.codespace }}" > /dev/null
+
       - name: Run repo setup
         run: gh codespace ssh -c "${{ github.event.inputs.codespace }}" -- "./setup.sh" > /dev/null
+
       - name: Execute Terminal Command
         run: gh codespace ssh -c "${{ github.event.inputs.codespace }}" -- ${{ github.event.inputs.command }} > /dev/null
+
       - name: Pause Codespace
-        run: gh codespace stop "${{ github.event.inputs.codespace }}" > /dev/null
+        run: gh codespace stop "${{ github.event.inputs.codespace }}" > /dev/null(
