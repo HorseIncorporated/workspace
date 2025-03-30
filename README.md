@@ -6,20 +6,27 @@
 
 ## installation
 
-### CLAUDE_CODE_GH org secret
+### github org secrets
 
-create and set your CLAUDE_CODE_GH fine-grained access token manually
+#### ANTHROPIC_API_KEY
 
-create a fine-grained access token in github
+1. navigate to [Anthropic Console API Keys](https://console.anthropic.com/settings/keys) and create a new API key
 
-### ANTHROPIC_API_KEY org secret
+2. navigate to [GitHub org secrets](https://github.com/organizations/HorseIncorporated/settings/secrets/actions) and set your `ANTHROPIC_API_KEY` secret
 
-create a new personal api token with claude
+![alt text](<Arc _2025-03-30 at 03.16.19.png>)
+
+#### CLAUDE_CODE_GH
+
+1. navigate to [Anthropic Console API Keys](https://console.anthropic.com/settings/keys) and create a new API key.
+
+2. navigate to [GitHub org secrets](https://github.com/organizations/HorseIncorporated/settings/secrets/actions) and set your `CLAUDE_CODE_GH` secret -- this grants access to actions to act on your behalf.
 
 ### Setup your Codespace
 
 1. navigate to the [HorseIncorporated/workspace](https://github.com/HorseIncorporated/workspace) repository.
-2.
+2. click on the green `<> Code` button. ![alt text](<Arc _2025-03-30 at 03.06.56@2x.png>)
+3. click on the green `Create codespace on main` button. ![alt text](<Arc _2025-03-30 at 03.07.38@2x.png>)
 
 ## on startup of codespace
 
