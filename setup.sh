@@ -14,8 +14,8 @@ for repo in "$REPOS_DIR"/*; do
     if [ -d "$repo/.devcontainer" ]; then
       echo "Found .devcontainer in $repo, removing..."
       rm -rf "$repo/.devcontainer"
-      echo "Copying .devcontainer from config directory to $repo..."
-      cp -r "$(dirname "$0")/config/.devcontainer" "$repo/"
     fi
+    echo "Copying .devcontainer from config directory to $repo..."
+    cp -r "$(dirname "$0")/config/.devcontainer" "$repo/"
   fi
 done

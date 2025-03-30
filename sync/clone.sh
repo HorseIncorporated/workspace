@@ -2,7 +2,7 @@
 
 # @todo fix the script to do this directory switching better
 # Start in directory: ./workspace/
-cd ..
+
 # Echo the current directory to help with debugging
 echo "Current working directory: $(pwd)"
 
