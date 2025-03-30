@@ -19,9 +19,9 @@ if ! command -v jq &> /dev/null; then
 fi
 
 # Set the GitHub token if available from environment
-GITHUB_PAT =${GITHUB_PAT:-}
+GH_PAT =${GH_PAT:-}
 AUTH_HEADER=""
-if [ -n "$GITHUB_PAT" ]; then
+if [ -n "$GH_PAT" ]; then
     AUTH_HEADER="-H 'Authorization: token $'"
 fi
 
