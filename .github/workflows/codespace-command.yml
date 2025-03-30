@@ -21,9 +21,13 @@ jobs:
           fi
 
       # Create private key file from your GitHub secret
-      - name: Prepare private key
+      - name: Prepare pat
         run: |
-          echo "${{ secrets.MY_APP_PRIVATE_KEY }}" > app_private_key.pem
+          export GH_PAT="${{ secrets.GH_PAT }}"
+
+      - name: Authenticate GitHub CLI
+        run: |
+          echo "${{ secrets.GH_PAT }}" | gh auth login -p https --with-token > /dev/null
 
       # Write the entire applogin.sh script, then chmod +x
       - name: Write applogin.sh
