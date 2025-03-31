@@ -78,11 +78,22 @@ Go through the setup steps and click Yes to any prompts.
 
 ### Stop the container
 
-Navigate to [View Codespaces](https://github.com/HorseIncorporated/workspace/codespaces)
-
-Click "..." -> "Stop container".
+```shell
+gh cs stop -c $CODESPACE_ID
+## if for whatever reason you want to kill & delete the container outright
+# gh cs delete -c $CODESPACE_ID
+```
 
 ## Verify installation
+
+### SSH prompt
+
+```shell
+# this should/may not work!
+gh codespace ssh -c $CODESPACE_ID -- "Why is the sky blue?. Also, perform a git pull origin on my current branch."
+```
+
+### GH Action
 
 ```shell
 gh workflow run "coder" \
