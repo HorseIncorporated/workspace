@@ -1,4 +1,4 @@
-name: Run Command in Codespace
+name: Run claude code prompt in Codespace
 
 on:
   workflow_dispatch:

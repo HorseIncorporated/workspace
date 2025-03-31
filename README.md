@@ -6,52 +6,96 @@
 
 ## installation
 
-### github org secrets
-
-#### ANTHROPIC_API_KEY
+### ANTHROPIC_API_KEY
 
 1. navigate to [Anthropic Console API Keys](https://console.anthropic.com/settings/keys) and create a new API key
 
-2. navigate to [GitHub org secrets](https://github.com/organizations/HorseIncorporated/settings/secrets/actions) and set your `ANTHROPIC_API_KEY` secret
-
-![alt text](<Arc _2025-03-30 at 03.16.19.png>)
-
-#### CLAUDE_CODE_GH
-
-1. navigate to [Anthropic Console API Keys](https://console.anthropic.com/settings/keys) and create a new API key.
-
-2. navigate to [GitHub org secrets](https://github.com/organizations/HorseIncorporated/settings/secrets/actions) and set your `CLAUDE_CODE_GH` secret -- this grants access to actions to act on your behalf.
-
-### Setup your Codespace
-
-1. navigate to the [HorseIncorporated/workspace](https://github.com/HorseIncorporated/workspace) repository.
-2. click on the green `<> Code` button. ![alt text](<Arc _2025-03-30 at 03.06.56@2x.png>)
-3. click on the green `Create codespace on main` button. ![alt text](<Arc _2025-03-30 at 03.07.38@2x.png>)
-
-## on startup of codespace
-
-![alt text](<Arc _2025-03-30 at 04.18.44@2x.png>)
-
-### clone all repos
+2. (local development only, skip if developing via codespaces) in your terminal, add your GH_PAT and auth with gh cli
 
 ```shell
-./setup.sh
+unset ANTHROPIC_API_KEY
+export ANTHROPIC_API_KEY=<your-anthropic-api-key>
 ```
 
-###
+3. navigate to [org secrets](https://github.com/organizations/HorseIncorporated/settings/secrets/actions) and set your `ANTHROPIC_API_KEY` secret
+
+### GH_PAT
+
+1. navigate to [GitHub Personal Access Tokens](https://github.com/settings/personal-access-tokens) and create a new Fine Grained personal access token.
+
+Ensure:
+
+- The resource owner is `HorseIncorporated`
+- Your PAT has enough permission to create codespaces, as well as any other scopes needed.
+
+Copy the generaterd PAT to clipboard.
+
+2. (local development only, skip if developing via codespaces) in terminal, add your GH_PAT and auth with gh cli
 
 ```shell
-# to find your github codespace id
-gh codespace list
+unset GITHUB_TOKEN
+export GH_PAT=<your-pat-token-copied-to-clipboard>
+echo $GH_PAT | gh auth login -p https --with-token > /dev/null
+```
 
-# set it locally so you can reuse the same devcontainer in perpituity
+3. navigate to [org secrets](https://github.com/organizations/HorseIncorporated/settings/secrets/actions) and set your `GH_PAT` secret.
+
+### Clone this Repository via HTTPS
+
+```shell
+git clone https://github.com/HorseIncorporated/workspace.git
+cd workspace
+```
+
+### Create your codespace
+
+```shell
+gh codespace create -r HorseIncorporated/workspace
+
+###
+# Grab the codespace ID
+###
 export CODESPACE_ID=<your-codespace-id-here>
+```
 
-# run a command on the codespace that verifies that claude runs properly
-# and is able to serve responses even with
-# the --dangerously-skip-permissions flag enabled
-gh workflow run "Run Command in Codespace" \
+### Run Claude Code manually (must be ran once)
+
+After Codespace is built and becomes available (takes between 5-10 minutes), navigate to: [View Codespaces](https://github.com/HorseIncorporated/workspace/codespaces)
+
+Click "..." -> "Open in Browser"
+
+
+![alt text](<Arc _2025-03-30 at 23.10.25@2x.png>)
+
+
+Once loaded, open up terminal (cmd/ctrl+t by default) and enter the following command
+
+```shell
+claude --dangerously-skip-permissions
+```
+
+Go through the setup steps and click Yes to any prompts.
+
+### Stop the container
+
+Navigate to [View Codespaces](https://github.com/HorseIncorporated/workspace/codespaces)
+
+Click "..." -> "Stop container".
+
+## Verify installation
+
+### SSH prompt
+
+```shell
+# this should/may not work!
+gh codespace ssh -c $CODESPACE_ID -- "Why is the sky blue?. Also, perform a git pull origin on my current branch."
+```
+
+### Dispatchable GitHub Action / iOS Shortcut
+
+```shell
+gh workflow run "coder" \
   --repo HorseIncorporated/workspace \
   --field codespace=$CODESPACE_ID \
-  --field command="claude -p \"why is the sky blue?\" --dangerously-skip-permissions"
+  --field prompt="Add a duck to workspace/README.md and create a pull request. Add a duck to repos/docs/README.md and create a pull request"
 ```
