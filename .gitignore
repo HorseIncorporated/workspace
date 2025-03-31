@@ -1,3 +1,4 @@
 .env
-repos
+repos/*
+!repos/.gitkeep
 config/.devcontainer/devcontainer.env
