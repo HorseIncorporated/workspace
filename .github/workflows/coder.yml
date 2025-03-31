@@ -24,18 +24,18 @@ jobs:
         run: |
           echo "${{ secrets.GH_PAT }}" | gh auth login -p https --with-token > /dev/null
 
-      - name: Unpause Codespace
-        run: gh codespace rebuild -c "${{ github.event.inputs.codespace }}" > /dev/null
+      - name: Start Codespace
+        run: gh codespace rebuild -c $CODESPACE_ID > /dev/null
 
       - name: Unset GITHUB_TOKEN
-        run: gh codespace ssh -c "${{ github.event.inputs.codespace }}" -- "unset GITHUB_TOKEN" > /dev/null
+        run: gh codespace ssh -c $CODESPACE_ID -- "unset GITHUB_TOKEN" > /dev/null
 
       - name: explicitly set GH_PAT
-        run: gh codespace ssh -c "${{ github.event.inputs.codespace }}" -- "export GH_PAT=${{ secrets.GH_PAT }}" > /dev/null
+        run: gh codespace ssh -c $CODESPACE_ID -- "export GH_PAT=${{ secrets.GH_PAT }}" > /dev/null
 
       - name: clone other repos
         run: |
-          gh codespace ssh -c "${{ github.event.inputs.codespace }}" -- "cd repos && \
+          gh codespace ssh -c $CODESPACE_ID -- "cd repos && \
           REPOS=\$(curl -s -H \"Authorization: token \${GH_PAT}\" https://api.github.com/orgs/HorseIncorporated/repos | jq -r '.[].name') && \
           for REPO in \$REPOS; do \
             if [ \"\$REPO\" != \"workspace\" ]; then \
@@ -46,4 +46,7 @@ jobs:
           cd .."
 
       - name: run natural language prompt via claude code
-        run: gh codespace ssh -c "${{ github.event.inputs.codespace }}" -- "claude -p \"${{ github.event.inputs.prompt }}\" --dangerously-skip-permissions" > /dev/null
+        run: gh codespace ssh -c $CODESPACE_ID -- "claude -p \"${{ github.event.inputs.prompt }}\" --dangerously-skip-permissions" > /dev/null
+
+      - name: Stop Codespace
+        run: gh codespace stop -c $CODESPACE_ID > /dev/null
