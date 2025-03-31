@@ -3,9 +3,6 @@ name: coder
 on:
   workflow_dispatch:
     inputs:
-      codespace:
-        description: "The Codespace name or ID to operate on."
-        required: true
       prompt:
         description: "The claude code prompt to execute inside the Codespace."
         required: true
