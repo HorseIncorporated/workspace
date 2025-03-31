@@ -1,44 +1,21 @@
 {
-  "name": "Horse Incorporated Workspace",
+  "name": "Claude Code Sandbox",
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
-      "TZ": "${localEnv:TZ:America/New_York}"
+      "TZ": "${localEnv:TZ:America/Los_Angeles}"
     }
   },
   "runArgs": [
     "--cap-add=NET_ADMIN",
     "--cap-add=NET_RAW"
   ],
-  "features": {
-    "ghcr.io/devcontainers/features/sshd:1": {
-        "version": "latest"
-    }
-  },
   "customizations": {
     "vscode": {
       "extensions": [
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
-        "ms-playwright.playwright",
-        "YoavBls.pretty-ts-errors",
-        "prompt-flow.prompt-flow",
-        "ms-python.vscode-pylance",
-        "ms-python.python",
-        "pmneo.tsimporter",
-        "DavidAnson.vscode-markdownlint",
-        "PKief.material-icon-theme",
-        "christian-kohler.npm-intellisense",
-        "christian-kohler.path-intellisense",
-        "ms-toolsai.jupyter",
-        "ms-toolsai.vscode-jupyter-cell-tags",
-        "ms-toolsai.jupyter-renderers",
-        "ms-toolsai.jupyter-keymap",
-        "github.vscode-github-actions",
-        "GitHub.copilot",
-        "GitHub.copilot-chat",
-        "dbaeumer.vscode-eslint",
-        "divyanshu013.vscode-material-darker"
+        "eamodio.gitlens"
       ],
       "settings": {
         "editor.formatOnSave": true,
@@ -67,10 +44,9 @@
   "remoteEnv": {
     "NODE_OPTIONS": "--max-old-space-size=4096",
     "CLAUDE_CONFIG_DIR": "/home/node/.claude",
-    "POWERLEVEL9K_DISABLE_GITSTATUS": "true",
-    "GH_PAT": "${localEnv:GH_PAT}"
+    "POWERLEVEL9K_DISABLE_GITSTATUS": "true"
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "workspaceFolder": "/workspace",
-  // "postCreateCommand": "bash -c './setup.sh'"
+  "postCreateCommand": "sudo /usr/local/bin/init-firewall.sh"
 }
