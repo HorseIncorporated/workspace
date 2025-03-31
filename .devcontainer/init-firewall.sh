@@ -35,6 +35,7 @@ if [ -z "$gh_ranges" ]; then
     exit 1
 fi
 
+# Keep this minimal check for at least .web, .api, and .git
 if ! echo "$gh_ranges" | jq -e '.web and .api and .git' >/dev/null; then
     echo "ERROR: GitHub API response missing required fields"
     exit 1
@@ -48,7 +49,22 @@ while read -r cidr; do
     fi
     echo "Adding GitHub range $cidr"
     ipset add allowed-domains "$cidr"
-done < <(echo "$gh_ranges" | jq -r '(.web + .api + .git)[]' | aggregate -q)
+done < <(
+    echo "$gh_ranges" \
+    | jq -r '(
+        .web
+      + .api
+      + .git
+      + .hooks?
+      + .actions?
+      + .dependabot?
+      + .packages?
+      + .pages?
+      + .importer?
+      + .codespaces?
+    )[]' \
+    | aggregate -q
+)
 
 # Resolve and add other allowed domains
 for domain in \
@@ -63,7 +79,7 @@ for domain in \
         echo "ERROR: Failed to resolve $domain"
         exit 1
     fi
-    
+
     while read -r ip; do
         if [[ ! "$ip" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
             echo "ERROR: Invalid IP from DNS for $domain: $ip"

@@ -84,15 +84,6 @@ Click "..." -> "Stop container".
 
 ## Verify installation
 
-### SSH prompt
-
-```shell
-# this should/may not work!
-gh codespace ssh -c $CODESPACE_ID -- "Why is the sky blue?. Also, perform a git pull origin on my current branch."
-```
-
-### Dispatchable GitHub Action / iOS Shortcut
-
 ```shell
 gh workflow run "coder" \
   --repo HorseIncorporated/workspace \
