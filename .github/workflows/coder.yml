@@ -1,0 +1,49 @@
+name: Run Command in Codespace
+
+on:
+  workflow_dispatch:
+    inputs:
+      codespace:
+        description: "The Codespace name or ID to operate on."
+        required: true
+      prompt:
+        description: "The claude code prompt to execute inside the Codespace."
+        required: true
+
+jobs:
+  run-command:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Create private key file from your GitHub secret
+      - name: Prepare pat
+        run: |
+          export GH_PAT="${{ secrets.GH_PAT }}"
+
+      - name: Authenticate GitHub CLI
+        run: |
+          echo "${{ secrets.GH_PAT }}" | gh auth login -p https --with-token > /dev/null
+
+      - name: Unpause Codespace
+        run: gh codespace rebuild -c "${{ github.event.inputs.codespace }}" > /dev/null
+
+      - name: Unset GITHUB_TOKEN
+        run: gh codespace ssh -c "${{ github.event.inputs.codespace }}" -- "unset GITHUB_TOKEN" > /dev/null
+
+      - name: explicitly set GH_PAT
+        run: gh codespace ssh -c "${{ github.event.inputs.codespace }}" -- "export GH_PAT=${{ secrets.GH_PAT }}" > /dev/null
+
+      - name: clone other repos
+        run: |
+          gh codespace ssh -c "${{ github.event.inputs.codespace }}" -- "cd repos && \
+          REPOS=\$(curl -s -H \"Authorization: token \${GH_PAT}\" https://api.github.com/orgs/HorseIncorporated/repos | jq -r '.[].name') && \
+          for REPO in \$REPOS; do \
+            if [ \"\$REPO\" != \"workspace\" ]; then \
+              echo \"Cloning \$REPO...\" && \
+              git clone \"https://github.com/HorseIncorporated/\${REPO}.git\" || echo \"Failed to clone \$REPO\"; \
+            fi; \
+          done && \
+          cd .."
+
+      - name: run natural language prompt via claude code
+        run: gh codespace ssh -c "${{ github.event.inputs.codespace }}" -- "claude -p \"${{ github.event.inputs.prompt }}\" --dangerously-skip-permissions" > /dev/null

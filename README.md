@@ -30,6 +30,8 @@
 
 ## on startup of codespace
 
+![alt text](<Arc _2025-03-30 at 04.18.44@2x.png>)
+
 ### clone all repos
 
 ```shell
