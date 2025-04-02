@@ -1,0 +1,32 @@
+{
+  "id": "coder",
+  "version": "1.0.0",
+  "name": "coder",
+  "description": "coding agents via devcontainer feature",
+  "options": {
+      "OPENAI_API_KEY": {
+          "type": "string",
+          "proposals": [ "" ],
+          "default": "",
+          "description": "OpenAI API key to use (sk-... format)."
+      },
+      "ANTHROPIC_API_KEY": {
+          "type": "string",
+          "proposals": [ "" ],
+          "default": "",
+          "description": "Anthropic API key to use for Claude models."
+      },
+      // IF FIREWALL_ENABLED == true, then
+      "FIREWALL_ENABLED": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable firewall to restrict network access for coding agents."
+      }
+  },
+  "dependsOn": {
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
+  "capAdd": ["NET_ADMIN", "NET_RAW"],
+  "entrypoint": "/usr/local/bin/coder-entrypoint.sh"
+  // (No containerEnv here; will set env in install.sh)
+}
