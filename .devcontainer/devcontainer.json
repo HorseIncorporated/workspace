@@ -3,12 +3,7 @@
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
-      "TZ": "${localEnv:TZ:America/Los_Angeles}"
-    }
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/sshd:1": {
-        "version": "latest"
+      "TZ": "${localEnv:TZ:America/New York}"
     }
   },
   "runArgs": [

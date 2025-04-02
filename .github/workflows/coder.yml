@@ -21,6 +21,11 @@ jobs:
         run: |
           echo "${{ secrets.GH_PAT }}" | gh auth login -p https --with-token > /dev/null
 
+      - name: Authenticate Container Registry
+
+        run: |
+          echo "${{ secrets.REGISTRY_PAT }}" | docker login <registry-url> --username <username> --password-stdin > /dev/null
+
       - name: Start Codespace
         run: gh codespace rebuild -c ${{ vars.CODESPACE_ID }} > /dev/null
 
@@ -29,6 +34,9 @@ jobs:
 
       - name: explicitly set GH_PAT
         run: gh codespace ssh -c ${{ vars.CODESPACE_ID }} -- "export GH_PAT=${{ secrets.GH_PAT }}" > /dev/null
+
+      - name: pull in codespace
+        run: gh codespace ssh -c ${{ vars.CODESPACE_ID }} -- "git pull origin main" > /dev/null
 
       - name: clone other repos
         run: |
